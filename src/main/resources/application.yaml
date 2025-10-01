@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: tasker
+  datasource:
+    url: jdbc:postgresql://localhost:5432/tasker
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+server:
+  port: 8080
+app:
+  security:
+    jwt:
+      secret: "ZwKk5xPn7LP1gJS7tCBv2GwG8bKFNPsQyi+MDYm8iqtWOnioExb5hSITPLs1aeKu
+7KjYajOCYVN6Y6ZA/M5nFA=="
+      issuer: "tasker-app"
+      access-token-ttl-min: 60
+      refresh-token-ttl-days: 7
