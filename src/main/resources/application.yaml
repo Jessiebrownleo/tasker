@@ -18,3 +18,9 @@ app:
       issuer: "tasker-app"
       access-token-ttl-min: 60
       refresh-token-ttl-days: 7
+
+#springdoc:
+#  api-docs:
+#    path: /api-docs
+#  swagger-ui:
+#    path: /swagger-ui.html

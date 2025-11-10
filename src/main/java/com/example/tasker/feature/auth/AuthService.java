@@ -47,8 +47,7 @@ public class AuthService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword()));
         User user= userRepository.findByEmail(request.getEmail()).orElseThrow(
                 ()->new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,"Account with this email not " +
-                        "found!"
+                        HttpStatus.NOT_FOUND,"User not found"
                 )
         );
         return issueToken(user.getEmail(),user.getRole().name());
