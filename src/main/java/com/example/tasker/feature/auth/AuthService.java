@@ -9,6 +9,7 @@ import com.example.tasker.feature.auth.dto.TokenResponse;
 import com.example.tasker.feature.user.UserRepository;
 import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +22,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -29,7 +31,7 @@ public class AuthService {
 
     public TokenResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,"Email is " +
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is " +
                     "already registered!!");
         }
         User user = new User();
@@ -38,27 +40,26 @@ public class AuthService {
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         user.setRole(Role.USER);
         userRepository.save(user);
-        return issueToken(user.getEmail(),user.getRole().name());
+        log.info("Registered new user: {}", user.getEmail());
+        return issueToken(user.getEmail(), user.getRole().name());
     }
 
-    //Login
+    // Login
 
-    public TokenResponse login(LoginRequest request){
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword()));
-        User user= userRepository.findByEmail(request.getEmail()).orElseThrow(
-                ()->new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,"User not found"
-                )
-        );
-        return issueToken(user.getEmail(),user.getRole().name());
+    public TokenResponse login(LoginRequest request) {
+        authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(
+                () -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "User not found"));
+        log.info("User logged in: {}", user.getEmail());
+        return issueToken(user.getEmail(), user.getRole().name());
     }
 
-
-
-    //Issue Token
-    private TokenResponse issueToken(String email,String role){
+    // Issue Token
+    private TokenResponse issueToken(String email, String role) {
         TokenResponse res = new TokenResponse();
-        String access = jwtService.generateAccessToken(email, Map.of("role",role));
+        String access = jwtService.generateAccessToken(email, Map.of("role", role));
         String refresh = jwtService.generateRefreshToken(email);
         res.setAccessToken(access);
         res.setRefreshToken(refresh);
