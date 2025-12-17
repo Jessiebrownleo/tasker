@@ -1,6 +1,6 @@
 package com.example.tasker.domain;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,10 +25,12 @@ public class Label extends BaseEntity {
     @Column(nullable = false, length = 16)
     private String color;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "label", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<TaskLabel> tasks = new HashSet<>();
 }

@@ -17,7 +17,7 @@ public class TaskController {
     private final TaskService taskService;
 
     // List by column
-    @GetMapping("/{columnId}")
+    @GetMapping("/column/{columnId}")
     public ResponseEntity<List<TaskSummary>> listByColumn(@AuthenticationPrincipal UserDetails me,
             @PathVariable Long columnId) {
         return ResponseEntity.ok(taskService.listByColumn(me.getUsername(), columnId));

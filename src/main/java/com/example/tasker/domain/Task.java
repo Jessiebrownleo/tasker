@@ -1,5 +1,6 @@
 package com.example.tasker.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -34,6 +35,7 @@ public class Task extends BaseEntity {
 
     private LocalDate dueDate;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "column_id", nullable = false)
     private ColumnEntity column;

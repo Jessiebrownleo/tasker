@@ -13,7 +13,7 @@ import com.example.tasker.feature.board.BoardAuthorization;
 import com.example.tasker.feature.board.BoardMembershipRepository;
 import com.example.tasker.feature.board.BoardRepository;
 import com.example.tasker.feature.board.LabelRepository;
-import com.example.tasker.feature.board.dto.LabelBrief;
+import com.example.tasker.feature.task.dto.LabelBrief;
 import com.example.tasker.feature.column.ColumnEntityRepository;
 import com.example.tasker.feature.task.dto.AssigneeBrief;
 import com.example.tasker.feature.task.dto.CreateTaskRequest;
@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class TaskService {
     private final TaskRepository taskRepository;
     private final ColumnEntityRepository columnEntityRepository;
@@ -192,7 +193,8 @@ public class TaskService {
         boardAuth.ensureOwnerOrAdmin(email, target.getBoard().getId());
         task.setColumn(target);
         Integer max = taskRepository.findMaxPositionByColumnId(target.getId());
-        task.setPosition(request.getPosition() == null ? (max == null ? 1 : max) : request.getPosition());
+        task.setPosition(request.getPosition() == null ? (max == null ? 1 : max + 1) : request.getPosition());
+        taskRepository.save(task);
         return toDetail(task);
     }
 

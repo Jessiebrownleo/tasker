@@ -1,6 +1,5 @@
 package com.example.tasker.feature.comment;
 
-import com.example.tasker.domain.Comment;
 import com.example.tasker.feature.comment.dto.CommentCreateAndRequest;
 import com.example.tasker.feature.comment.dto.CommentUpdateRequest;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,8 @@ public class CommentController {
     private final CommentService commentService;
 
     @GetMapping("/{taskId}")
-    public ResponseEntity<List<Comment>> get(@AuthenticationPrincipal UserDetails me, @PathVariable Long taskId) {
+    public ResponseEntity<List<com.example.tasker.feature.comment.dto.CommentDto>> get(
+            @AuthenticationPrincipal UserDetails me, @PathVariable Long taskId) {
         return ResponseEntity.ok(commentService.getByTask(me.getUsername(),
                 taskId));
     }

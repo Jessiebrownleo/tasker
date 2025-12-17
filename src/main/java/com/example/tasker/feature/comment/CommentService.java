@@ -23,10 +23,25 @@ public class CommentService {
     private final UserRepository userRepository;
 
     // Get comment on task
-    public List<Comment> getByTask(String email, Long taskId) {
+    public List<com.example.tasker.feature.comment.dto.CommentDto> getByTask(String email, Long taskId) {
         Task task = taskRepository.findById(taskId).orElseThrow();
         boardAuth.ensureMember(email, task.getColumn().getBoard().getId());
-        return commentRepository.findByTask_IdOrderByCreatedAtAsc(taskId);
+        return commentRepository.findByTask_IdOrderByCreatedAtAsc(taskId).stream().map(this::toDto).toList();
+    }
+
+    private com.example.tasker.feature.comment.dto.CommentDto toDto(Comment comment) {
+        com.example.tasker.feature.comment.dto.CommentDto dto = new com.example.tasker.feature.comment.dto.CommentDto();
+        dto.setId(comment.getId());
+        dto.setBody(comment.getBody());
+        dto.setCreatedAt(comment.getCreatedAt());
+
+        com.example.tasker.feature.comment.dto.CommentDto.AuthorDto authorDto = new com.example.tasker.feature.comment.dto.CommentDto.AuthorDto();
+        authorDto.setId(comment.getAuthor().getId());
+        authorDto.setFullName(comment.getAuthor().getFullName());
+        authorDto.setEmail(comment.getAuthor().getEmail());
+        dto.setAuthor(authorDto);
+
+        return dto;
     }
 
     // Create comment on task

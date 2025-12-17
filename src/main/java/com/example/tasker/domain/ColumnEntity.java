@@ -1,6 +1,6 @@
 package com.example.tasker.domain;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,6 +25,7 @@ public class ColumnEntity extends BaseEntity {
     @Column(nullable = false)
     private int position;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
@@ -32,4 +33,3 @@ public class ColumnEntity extends BaseEntity {
     @OneToMany(mappedBy = "column", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Task> tasks = new HashSet<>();
 }
-
